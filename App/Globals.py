@@ -4,18 +4,20 @@ def init():
     global given_rewards
 
     global paus_game
+    global exit_learning
 
-    global model
+    global reset_env
+
     global env
-
-    global image
+    global model
 
     reward = 0.0
     given_rewards = 0
     score = 0
 
     paus_game = True
+    exit_learning = False
+    reset_env = False
 
-    model = None
     env = None
-    image = None
+    model = None

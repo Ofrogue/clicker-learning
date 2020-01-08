@@ -1,9 +1,7 @@
-import threading, time
+import Globals, pygame, os, warnings, threading, time, cv2
 
-import Globals, pygame, os, warnings
-
-from builders import EnvironmentBuilder, ModelBuilder
 from trackers.GameTracker import GameTracker
+from LearningThread import LearningThread
 
 import tensorflow as tf
 import numpy as np
@@ -34,12 +32,10 @@ class App:
         self._running = True
         self._display_surf = None
         self._learning_thread = None
-        self.size = self.weight, self.height = 160, 210
+        self.size = self.weight, self.height = 320, 420
 
     def on_init(self):
         Globals.init()
-        EnvironmentBuilder.init()
-        ModelBuilder.init()
         pygame.init()
         self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         self._running = True
@@ -59,42 +55,34 @@ class App:
 
             # QUIT
             if event.key == pygame.K_ESCAPE:
+                Globals.exit_learning = True
                 self._running = False
 
             # HARD RESET
             if event.key == pygame.K_q:
-                pass
-                # ModelBuilder.init()
-                # self.game_session_init()
+                Globals.exit_learning = True
+                self._learning_thread.stop()
 
             # SOFT RESET
-            if event.key == pygame.K_r:
-                # print('SOFT RESET')
-                # self.game_session_init()
-                self._start_trial = False
+            # if event.key == pygame.K_r:
+            #     Globals.reset_env = True
 
     def game_session_init(self):
-        self._learning_thread = threading.Thread(target=Globals.model.learn, args=(360000,))
+        self._learning_thread = LearningThread()
+        self._learning_thread.init_model()
         self._learning_thread.start()
 
     def on_loop(self):
-        pass
-        # action, states = Globals.model.predict(Globals.obs)
-        # Globals.obs, rewards, dones, info = Globals.env.step(action)
+        print(Globals.model.get_parameters()['deepq/model/action_value/fully_connected_1/weights:0'])
 
     def on_render(self):
         rgb = Globals.env.render(mode='rgb_array')
-        image = np.transpose(rgb, (1, 0, 2))
-        pygame.pixelcopy.array_to_surface(self._display_surf, image)
+        rgb_trans = np.transpose(rgb, (1, 0, 2))
+        image_resize = cv2.resize(rgb_trans, (self.height, self.weight))
+        pygame.pixelcopy.array_to_surface(self._display_surf, image_resize)
         pygame.display.flip()
-        # while Globals.paus_game:
-        #     pass
-        # if Globals.image is not None:
-        #     pygame.pixelcopy.array_to_surface(self._display_surf, Globals.image)
-        #     pygame.display.flip()
 
     def on_cleanup(self):
-        self._learning_thread.kill()
         pygame.quit()
 
     def on_execute(self):
@@ -104,11 +92,16 @@ class App:
         self.game_session_init()
 
         while self._running:
+
+            if self._learning_thread.stopped():
+                self.game_session_init()
+
             for event in pygame.event.get():
                 self.on_event(event)
 
             self.on_loop()
             self.on_render()
+
         self.on_cleanup()
 
 

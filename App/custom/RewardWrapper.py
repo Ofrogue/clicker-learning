@@ -15,6 +15,5 @@ class RewardWrapper(VecEnvWrapper):
         if rewards[0] == 1:
             Globals.score += 1
         rewards[0] = Globals.reward
-        print(rewards)
         Globals.reward = 0.0
         return observations, rewards, dones, infos

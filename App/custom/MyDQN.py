@@ -109,10 +109,16 @@ class MyDQN(DQN):
             self.episode_reward = np.zeros((1,))
             timesteps_last_log = 0
             avr_ep_len_per_log = None
-            sleep = 0.06
+            sleep = 0.05
 
             for _ in range(total_timesteps):
-                time.sleep(sleep)
+
+                while Globals.paus_game:
+                    pass
+
+                if Globals.exit_learning:
+                    break
+
                 if callback is not None:
                     # Only stop training if return value is False, not when it is None. This is for backwards
                     # compatibility with callbacks that have no return statement.
@@ -165,7 +171,9 @@ class MyDQN(DQN):
                 can_sample = self.replay_buffer.can_sample(self.batch_size)
 
                 if can_sample:
-                    sleep = 0.04
+                    sleep = 0.03
+
+                # time.sleep(sleep)
 
                 if can_sample and self.num_timesteps > self.learning_starts \
                         and self.num_timesteps % self.train_freq == 0:
