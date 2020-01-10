@@ -23,11 +23,11 @@ def init():
     file = open('models/BreakoutNoFrameskip-v4.pkl', 'rb')
     _, zoo_weights = pickle.load(file)
 
-    model = MyDQN(MyCnnPolicy, Globals.env, double_q=double_q, learning_starts=learning_starts,
+    model = MyDQN(MyCnnPolicy, Globals.env, double_q=double_q, learning_starts=learning_starts, learning_rate=learning_rate,
                   tensorboard_log=tensorboard_log, verbose=verbose, exploration_fraction=exploration_fraction,
                   prioritized_replay=prioritized_replay, exploration_final_eps=exploration_final_eps)
 
-    zoo_model = DQN(CnnPolicy, Globals.env)
+    zoo_model = DQN(CnnPolicy, Globals.env, double_q=double_q, learning_starts=learning_starts)
     zoo_model.load_parameters(zoo_weights)
 
     model.load_parameters(zoo_model.get_parameters(), exact_match=False)
