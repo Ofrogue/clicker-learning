@@ -28,5 +28,5 @@ We suggest using conda
 ```conda create -n clickerlearning```  
 ```conda activate clickerlearning```  
 
-```conda install python==3.7 --yes && conda install -c conda-forge tensorflow --yes && conda install opencv --yes && pip install gym==0.11.0 stable-baselines```  
+```conda install python==3.7 --yes && conda install -c conda-forge tensorflow --yes && conda install opencv --yes && pip install gym==0.11.0 stable-baselines==2.8.0```  
 stable-baselines are slightly outdated according to the latest changes in gym. Thus we use an older version of gym.
