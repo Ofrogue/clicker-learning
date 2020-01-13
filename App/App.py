@@ -10,35 +10,49 @@ warnings.filterwarnings("ignore")
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 os.environ["KMP_AFFINITY"] = "none"
 
-
-# game_tracker = GameTracker()
-# game_tracker.start()
-#
-# for _ in range(1000):
-#     env.render()
-#     action, states = model.predict(obs)
-#     obs, rewards, dones, info = env.step(action)
-#     time.sleep(0.05)
-#
-#     if info[0]['ale.lives'] == 0:
-#         game_tracker.end()
-#         game_tracker.save_results()
-#         game_tracker.start()
-
+game_time = 600
 
 class App:
     def __init__(self):
         self._game_tracker = GameTracker()
         self._running = True
-        self._display_surf = None
+        self._main_display = None
+        self._game_srf = None
+        self._timer_srf = None
+        self._timer_font = None
         self._learning_thread = None
-        self.size = self.weight, self.height = 320, 420
+        self.timer = game_time
+        self.fps = 60
+        self.current_frame = 0
+        self.timer_srf_size = self.timer_srf_width, self.timer_srf_height = 320, 50
+        self.game_srf_size = self.game_srf_width, self.game_srf_height = 320, 420
+        self.display_size = self.display_width, self.display_height = 320, 470
+
+    def get_time(self):
+        minunts = int(self.timer / 60)
+        seconds = int(self.timer % 60)
+        return '{0:02d}:{1:02d}'.format(minunts, seconds)
 
     def on_init(self):
         Globals.init()
         pygame.init()
-        self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-        self._loading_font = pygame.font.Font("freesansbold.ttf", 24)
+        self._main_display = pygame.display.set_mode(self.display_size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+
+        self._timer_srf = pygame.Surface(self.timer_srf_size)
+        self._timer_srf.fill((0, 0, 0))
+        self._timer_font = pygame.font.SysFont('Consolas', 30)
+        text = self._timer_font.render(self.get_time(), True, (255, 255, 255))
+        textRect = text.get_rect()
+        textRect.center = (self.timer_srf_width // 2, self.timer_srf_height // 2)
+        self._timer_srf.blit(text, textRect)
+        self._main_display.blit(self._timer_srf, (0, 0))
+
+        self._game_srf = pygame.Surface(self.game_srf_size)
+        self._game_srf.fill((155, 255, 255))
+        self._main_display.blit(self._game_srf, (0, 50))
+
+        pygame.display.flip()
+
         self._running = True
 
     def on_event(self, event):
@@ -66,20 +80,39 @@ class App:
 
             # HARD RESET
             if event.key == pygame.K_q:
-                Globals.paus_game = False
-                Globals.exit_learning = True
-                self._game_tracker.save_results()
-                self._learning_thread.stop()
+                self.end_session()
+
+    def end_session(self):
+        Globals.paus_game = False
+        Globals.exit_learning = True
+        self._game_tracker.save_results()
+        self._learning_thread.stop()
+        Globals.paus_game = True
 
     def game_session_init(self):
+        self.timer = game_time
         self._learning_thread = LearningThread()
         self._learning_thread.init_model()
         self._learning_thread.start()
 
     def on_loop(self):
-        pass
+        if not Globals.paus_game:
+            self.current_frame += 1
+            if self.current_frame == self.fps:
+                self.timer -= 1
+                self.current_frame = 0
+                if self.timer == 0:
+                    self.end_session()
+
 
     def on_render(self):
+        self._timer_srf.fill((0, 0, 0))
+        text = self._timer_font.render(self.get_time(), True, (255, 255, 255))
+        textRect = text.get_rect()
+        textRect.center = (self.timer_srf_width // 2, self.timer_srf_height // 2)
+        self._timer_srf.blit(text, textRect)
+        self._main_display.blit(self._timer_srf, (0, 0))
+
         if Globals.loading:
             pass
             # self._display_surf.fill((255, 255, 255))
@@ -89,9 +122,11 @@ class App:
         else:
             rgb = Globals.env.render(mode='rgb_array')
             rgb_trans = np.transpose(rgb, (1, 0, 2))
-            image_resize = cv2.resize(rgb_trans, (self.height, self.weight))
-            pygame.pixelcopy.array_to_surface(self._display_surf, image_resize)
-            pygame.display.flip()
+            image_resize = cv2.resize(rgb_trans, (self.game_srf_height, self.game_srf_width))
+            pygame.pixelcopy.array_to_surface(self._game_srf, image_resize)
+            self._main_display.blit(self._game_srf, (0, 50))
+
+        pygame.display.update()
 
     def on_cleanup(self):
         pygame.quit()
@@ -113,7 +148,7 @@ class App:
             self.on_loop()
             self.on_render()
 
-            pygame.time.Clock().tick(50)
+            pygame.time.Clock().tick(self.fps)
 
         self.on_cleanup()
 

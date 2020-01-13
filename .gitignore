@@ -1,2 +1,11 @@
-/.idea/
 /App/tensor/
+/.idea/
+/.ipynb_checkpoints/
+/.idea/inspectionProfiles/
+/.idea/.gitignore
+/.idea/clicker-learning.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/other.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
