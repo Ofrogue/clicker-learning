@@ -113,6 +113,9 @@ class MyDQN(DQN):
 
             for _ in range(total_timesteps):
 
+                if Globals.loading:
+                    Globals.loading = False
+
                 while Globals.paus_game:
                     pass
 

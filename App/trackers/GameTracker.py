@@ -9,8 +9,13 @@ from datetime import datetime, date
 
 
 class GameTracker:
-    results_dir = 'results/{0}'
-    results_file_name = None
+    files_n = None
+
+    results_dir = 'tensor'
+    results_session_dir = 'tensor/DQN_{0}'
+
+    results_model = 'model'
+    results_file = 'results.csv'
 
     start_timestap = None
     end_timestap = None
@@ -18,35 +23,15 @@ class GameTracker:
     game_number = 0
 
     def __init__(self):
-        self.results_dir = self.results_dir.format(date.today())
         if not os.path.exists(self.results_dir):
+            self.files_n = 1
             os.makedirs(self.results_dir)
-
-        self.results_file_name = '{0}.csv'.format(len(os.listdir(self.results_dir)))
-
-    def start(self):
-        Globals.score = 0
-        Globals.given_rewards = 0
-        self.game_number += 1
-        self.start_timestap = datetime.now()
-
-    def end(self):
-        self.end_timestap = datetime.now()
-
-    def get_results(self):
-        return {
-                'game': self.game_number,
-                'start timestap': '{0}'.format(self.start_timestap),
-                'end timestap': '{0}'.format(self.end_timestap),
-                'time delta': '{0}'.format(self.end_timestap - self.start_timestap),
-                'score': Globals.score,
-                'number of rewards': Globals.given_rewards
-            }
+        else:
+            self.files_n = len(os.listdir(self.results_dir)) + 1
 
     def save_results(self):
-        results = pd.DataFrame([self.get_results()])
-        file_path = self.results_dir + '/' + self.results_file_name
-        if os.path.exists(file_path):
-            results.to_csv(file_path, mode='a', index=False, header=False)
-        else:
-            results.to_csv(file_path, index=False)
+        dir_name = self.results_session_dir.format(self.files_n)
+        results = pd.DataFrame(Globals.results_list).drop_duplicates()
+        results.to_csv(dir_name + '/results.csv', index=False)
+        Globals.model.save(dir_name + '/model.h5')
+        self.files_n += 1

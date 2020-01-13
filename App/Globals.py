@@ -1,23 +1,26 @@
 def init():
     global reward
+    global blocks
     global score
+    global results_list
     global given_rewards
 
+    global loading
     global paus_game
     global exit_learning
-
-    global reset_env
 
     global env
     global model
 
     reward = 0.0
     given_rewards = 0
+    blocks = 0
     score = 0
+    results_list = []
 
+    loading = True
     paus_game = True
     exit_learning = False
-    reset_env = False
 
     env = None
     model = None

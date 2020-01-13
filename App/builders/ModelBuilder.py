@@ -10,7 +10,7 @@ from custom.MyCnnPolicy import MyCnnPolicy
 double_q = False
 prioritized_replay = True
 learning_starts = 1
-tensorboard_log = './tensor/'
+tensorboard_log = 'tensor/'
 verbose = 2
 exploration_fraction = 0.0002
 exploration_final_eps = 0.00002
