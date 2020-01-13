@@ -2,6 +2,7 @@ import time
 
 import Globals
 
+
 from stable_baselines import DQN
 
 from gym.spaces import MultiDiscrete
@@ -12,6 +13,8 @@ from functools import partial
 import tensorflow as tf
 import numpy as np
 import gym
+import logging
+import os
 
 from stable_baselines import logger
 from stable_baselines.common import tf_util, SetVerbosity, TensorboardWriter
@@ -21,8 +24,12 @@ from stable_baselines.deepq.replay_buffer import ReplayBuffer, PrioritizedReplay
 from stable_baselines.deepq.policies import DQNPolicy
 from stable_baselines.a2c.utils import total_episode_reward_logger
 
+from stable_baselines.common.cmd_util import make_atari_env
+from stable_baselines.common.vec_env import VecFrameStack
+
 
 class MyDQN(DQN):
+
     def __init__(self, *args, **kwargs):
 
         super(MyDQN, self).__init__(*args, **kwargs)
@@ -71,7 +78,6 @@ class MyDQN(DQN):
 
     def learn(self, total_timesteps, callback=None, seed=None, log_interval=100, tb_log_name="DQN",
               reset_num_timesteps=True, replay_wrapper=None):
-
         new_tb_log = self._init_num_timesteps(reset_num_timesteps)
 
         with SetVerbosity(self.verbose), TensorboardWriter(self.graph, self.tensorboard_log, tb_log_name, new_tb_log) \
@@ -241,6 +247,58 @@ class MyDQN(DQN):
 
         return self
 
+    def evaluate(self, n_episodes=2):
+
+        logging.basicConfig(level=logging.INFO)
+
+        id = 'BreakoutNoFrameskip-v4'
+        num_env = 1
+        n_stack = 4
+        left_lives = 5
+        seed = 0
+        episodes = 0
+        score = 0
+        frames = 0
+        frames_per_episode = list()
+        scores = [list() for i in range(n_episodes)]
+
+        env = make_atari_env(id, num_env=num_env, seed=seed)
+        env = VecFrameStack(env, n_stack=n_stack)
+        obs = env.reset()
+
+
+        while (n_episodes - episodes) > 0:
+            frames += 1
+            action, _states = self.predict(obs)
+            obs, rewards, dones, info = env.step(action)
+            env.render()
+            score += rewards[0]
+            if dones:
+                logging.debug('You died')
+                logging.debug(f'Score = {score}')
+                scores[episodes].append(score)
+                score = 0
+                left_lives -= 1
+            if not left_lives:
+                logging.debug('Episode ended')
+                logging.info(f'Scores per life: {scores[episodes]}')
+                frames_per_episode.append(frames)
+                frames = 0
+                episodes += 1
+                left_lives = 5
+
+        s = list(map(sum, scores))
+        avg_s = int(sum(s) / len(s))
+        avg_f = int(sum(frames_per_episode) / len(frames_per_episode))
+
+        logging.info(f'Played {n_episodes} episodes')
+        logging.info(f'Scores per episode : {s}')
+        logging.info(f'Average score per episode : {avg_s}')
+        logging.info(f'Average number of frames per episode : {avg_f}')
+
+        return avg_f, avg_s
+
+
 
 def my_build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clipping=None,
                    gamma=1.0, double_q=True, scope="deepq", reuse=None,
@@ -394,3 +452,9 @@ def my_build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clippi
     update_target = tf_util.function([], [], updates=[update_target_expr])
 
     return act_f, train, update_target, step_model
+
+
+
+
+
+
