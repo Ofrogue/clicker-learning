@@ -1,9 +1,14 @@
+from LearningThread import LearningThread
+
+
 def init():
     global reward
     global blocks
     global score
     global results_list
     global given_rewards
+
+    global steps
 
     global loading
     global pause_game
@@ -16,6 +21,7 @@ def init():
     given_rewards = 0
     blocks = 0
     score = 0
+    steps = LearningThread.iteration
     results_list = []
 
     loading = True

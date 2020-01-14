@@ -244,6 +244,7 @@ class MyDQN(DQN):
                     logger.dump_tabular()
 
                 self.num_timesteps += 1
+                Globals.steps -= 1
 
         return self
 

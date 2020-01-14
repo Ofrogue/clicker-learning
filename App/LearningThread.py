@@ -5,6 +5,7 @@ from builders import ModelBuilder, EnvironmentBuilder
 
 
 class LearningThread(threading.Thread):
+    iteration = 5000
 
     def __init__(self,  *args, **kwargs):
         super(LearningThread, self).__init__(*args, **kwargs)
@@ -17,7 +18,7 @@ class LearningThread(threading.Thread):
     def run(self):
         Globals.exit_learning = False
         Globals.pause_game = True
-        Globals.model.learn(20000)
+        Globals.model.learn(self.iteration)
 
     def stop(self):
         self._stop_event.set()

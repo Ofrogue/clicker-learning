@@ -23,34 +23,43 @@ class App:
         self._timer_font = None
         self._learning_thread = None
         self.timer = game_time
-        self.fps = 60
+        self.fps = 30
         self.current_frame = 0
-        self.timer_srf_size = self.timer_srf_width, self.timer_srf_height = 320, 50
-        self.game_srf_size = self.game_srf_width, self.game_srf_height = 320, 420
-        self.display_size = self.display_width, self.display_height = 320, 470
+        self.timer_srf_size = self.timer_srf_width, self.timer_srf_height = 350, 50
+        self.game_srf_size = self.game_srf_width, self.game_srf_height = 350, 420
+        self.display_size = self.display_width, self.display_height = 350, 470
 
     def get_time(self):
         minunts = int(self.timer / 60)
         seconds = int(self.timer % 60)
         return '{0:02d}:{1:02d}'.format(minunts, seconds)
 
-    def on_init(self):
-        Globals.init()
-        pygame.init()
-        self._main_display = pygame.display.set_mode(self.display_size, pygame.HWSURFACE | pygame.DOUBLEBUF)
-
-        self._timer_srf = pygame.Surface(self.timer_srf_size)
+    def set_upper_frame(self):
         self._timer_srf.fill((0, 0, 0))
-        self._timer_font = pygame.font.SysFont('Consolas', 30)
-        text = self._timer_font.render(self.get_time(), True, (255, 255, 255))
+        text = self._timer_font.render('Iteraions : {0}    Rewards : {1}'.format(Globals.steps, Globals.given_rewards), True, (255, 255, 255))
         textRect = text.get_rect()
         textRect.center = (self.timer_srf_width // 2, self.timer_srf_height // 2)
         self._timer_srf.blit(text, textRect)
         self._main_display.blit(self._timer_srf, (0, 0))
 
-        self._game_srf = pygame.Surface(self.game_srf_size)
-        self._game_srf.fill((155, 255, 255))
+    def display_loading(self):
+        self._game_srf.fill((0, 0, 0))
+        loading_text = pygame.font.SysFont('Consolas', 50).render('Loading Game', True, (255, 255, 255))
+        loading_rect = loading_text.get_rect()
+        loading_rect.center = (self.game_srf_width // 2, self.game_srf_height // 2)
+        self._game_srf.blit(loading_text, loading_rect)
         self._main_display.blit(self._game_srf, (0, 50))
+
+    def on_init(self):
+        Globals.init()
+        pygame.init()
+        self._main_display = pygame.display.set_mode(self.display_size, pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self._timer_srf = pygame.Surface(self.timer_srf_size)
+        self._timer_font = pygame.font.SysFont('Consolas', 30)
+        self.set_upper_frame()
+
+        self._game_srf = pygame.Surface(self.game_srf_size)
+        self.display_loading()
 
         pygame.display.flip()
 
@@ -61,7 +70,7 @@ class App:
             self._running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and not Globals.pause_game:
                 Globals.given_rewards += 1
                 Globals.reward = 1.0
 
@@ -89,37 +98,31 @@ class App:
         self._game_tracker.save_results()
         self._learning_thread.stop()
         Globals.pause_game = True
+        Globals.loading = True
 
     def game_session_init(self):
+        Globals.steps = LearningThread.iteration
         self.timer = game_time
         self._learning_thread = LearningThread()
         self._learning_thread.init_model()
         self._learning_thread.start()
 
     def on_loop(self):
-        if not Globals.pause_game:
-            self.current_frame += 1
-            if self.current_frame == self.fps:
-                self.timer -= 1
-                self.current_frame = 0
-                if self.timer == 0:
-                    self.end_session()
-
+        if Globals.steps <= 0:
+            self.end_session()
+        # if not Globals.pause_game:
+        #     self.current_frame += 1
+        #     if self.current_frame == self.fps:
+        #         self.timer -= 1
+        #         self.current_frame = 0
+        #         if self.timer == 0:
+        #             self.end_session()
 
     def on_render(self):
-        self._timer_srf.fill((0, 0, 0))
-        text = self._timer_font.render(self.get_time(), True, (255, 255, 255))
-        textRect = text.get_rect()
-        textRect.center = (self.timer_srf_width // 2, self.timer_srf_height // 2)
-        self._timer_srf.blit(text, textRect)
-        self._main_display.blit(self._timer_srf, (0, 0))
+        self.set_upper_frame()
 
         if Globals.loading:
-            pass
-            # self._display_surf.fill((255, 255, 255))
-            # text_surface, rect = self._loading_font.render("Loading", (0, 0, 0))
-            # self._display_surf.blit(text_surface, (40, 250))
-            # self._loading_font.render_to(self._display_surf, (40, 350), "Hello World!", (0, 0, 0))
+            self.display_loading()
         else:
             rgb = Globals.env.render(mode='rgb_array')
             rgb_trans = np.transpose(rgb, (1, 0, 2))

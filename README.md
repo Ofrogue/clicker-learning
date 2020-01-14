@@ -30,3 +30,19 @@ We suggest using conda
 
 ```conda install python==3.7 --yes && conda install -c conda-forge tensorflow --yes && conda install opencv --yes && pip install gym==0.11.0 stable-baselines==2.8.0```  
 stable-baselines are slightly outdated according to the latest changes in gym. Thus we use an older version of gym.
+
+# Application Manual
+### Starting application
+Navigate to ```App``` folder and run the following command ```python App.py``` and wait for the game to load.
+
+After the game is loaded you will be able to interact with it, using the following keys:
+* p - pause/unpause the game
+* space - give reward
+* q - hard reset(load new model and environment)
+* Esc - quit game
+
+At the top of the screen you will see 2 indicators: the number of iteraions left and 
+the number of rewards that were given throughout the session.
+
+After a session has ended(hard reset) you will see a new directory in ```App/tensor``` where bouth the model and 
+some other meta data will appear.
