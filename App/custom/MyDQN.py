@@ -122,7 +122,7 @@ class MyDQN(DQN):
                 if Globals.loading:
                     Globals.loading = False
 
-                while Globals.paus_game:
+                while Globals.pause_game:
                     pass
 
                 if Globals.exit_learning:

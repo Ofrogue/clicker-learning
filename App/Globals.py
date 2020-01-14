@@ -6,7 +6,7 @@ def init():
     global given_rewards
 
     global loading
-    global paus_game
+    global pause_game
     global exit_learning
 
     global env
@@ -19,7 +19,7 @@ def init():
     results_list = []
 
     loading = True
-    paus_game = True
+    pause_game = True
     exit_learning = False
 
     env = None

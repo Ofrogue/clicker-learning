@@ -66,15 +66,15 @@ class App:
                 Globals.reward = 1.0
 
             if event.key == pygame.K_p:
-                Globals.paus_game = not Globals.paus_game
+                Globals.pause_game = not Globals.pause_game
 
             # START GAME
             if event.key == pygame.K_RETURN:
-                Globals.paus_game = False
+                Globals.pause_game = False
 
             # QUIT
             if event.key == pygame.K_ESCAPE:
-                Globals.paus_game = False
+                Globals.pause_game = False
                 Globals.exit_learning = True
                 self._game_tracker.save_results()
                 self._running = False
@@ -84,11 +84,11 @@ class App:
                 self.end_session()
 
     def end_session(self):
-        Globals.paus_game = False
+        Globals.pause_game = False
         Globals.exit_learning = True
         self._game_tracker.save_results()
         self._learning_thread.stop()
-        Globals.paus_game = True
+        Globals.pause_game = True
 
     def game_session_init(self):
         self.timer = game_time
@@ -97,7 +97,7 @@ class App:
         self._learning_thread.start()
 
     def on_loop(self):
-        if not Globals.paus_game:
+        if not Globals.pause_game:
             self.current_frame += 1
             if self.current_frame == self.fps:
                 self.timer -= 1
