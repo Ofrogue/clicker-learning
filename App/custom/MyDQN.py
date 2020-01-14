@@ -115,7 +115,7 @@ class MyDQN(DQN):
             self.episode_reward = np.zeros((1,))
             timesteps_last_log = 0
             avr_ep_len_per_log = None
-            sleep = 0.05
+            sleep = 0.045
 
             for _ in range(total_timesteps):
 
@@ -180,9 +180,9 @@ class MyDQN(DQN):
                 can_sample = self.replay_buffer.can_sample(self.batch_size)
 
                 if can_sample:
-                    sleep = 0.03
+                    sleep = 0.025
 
-                # time.sleep(sleep)
+                time.sleep(sleep)
 
                 if can_sample and self.num_timesteps > self.learning_starts \
                         and self.num_timesteps % self.train_freq == 0:

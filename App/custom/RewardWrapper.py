@@ -18,25 +18,13 @@ class RewardWrapper(VecEnvWrapper):
         if rewards[0] >= 1:
             Globals.blocks += 1
 
-        if len(Globals.results_list) == 0:
-            Globals.results_list.append(
-                {
-                    'timestamp': '{0}'.format(datetime.now()),
-                    'blocks': Globals.blocks,
-                    'number of rewards': Globals.given_rewards
-                }
-            )
-        else:
-            dt = datetime.strptime(Globals.results_list[-1]['timestamp'], "%Y-%m-%d %H:%M:%S.%f")
-            if (datetime.now() - dt).total_seconds() >= 0.5:
-                Globals.results_list.append(
-                    {
-                        'timestamp': '{0}'.format(datetime.now()),
-                        'blocks': Globals.blocks,
-                        'number of rewards': Globals.given_rewards
-                    }
-                )
-
+        Globals.results_list.append(
+            {
+                'timestamp': '{0}'.format(datetime.now()),
+                'blocks': Globals.blocks,
+                'number of rewards': Globals.given_rewards
+            }
+        )
 
         rewards[0] = Globals.reward
         Globals.reward = 0.0

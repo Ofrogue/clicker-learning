@@ -15,8 +15,8 @@ verbose = 2
 exploration_fraction = 0.0002
 exploration_final_eps = 0.00002
 
-magnitude = 0.0
-learning_rate = 0.0
+magnitude = 0.1
+learning_rate = 0.000001
 
 
 def init():

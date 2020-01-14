@@ -17,7 +17,7 @@ class LearningThread(threading.Thread):
     def run(self):
         Globals.exit_learning = False
         Globals.paus_game = True
-        Globals.model.learn(10000)
+        Globals.model.learn(20000)
 
     def stop(self):
         self._stop_event.set()

@@ -12,6 +12,7 @@ os.environ["KMP_AFFINITY"] = "none"
 
 game_time = 600
 
+
 class App:
     def __init__(self):
         self._game_tracker = GameTracker()
