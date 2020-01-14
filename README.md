@@ -44,5 +44,5 @@ After the game is loaded you will be able to interact with it, using the followi
 At the top of the screen you will see 2 indicators: the number of iteraions left and 
 the number of rewards that were given throughout the session.
 
-After a session has ended(hard reset) you will see a new directory in ```App/tensor``` where bouth the model and 
+After a session has ended(quit game, hard reset or the game has ended) you will see a new directory in ```App/tensor``` where bouth the model and 
 some other meta data will appear.
