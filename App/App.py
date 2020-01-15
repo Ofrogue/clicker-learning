@@ -101,6 +101,10 @@ class App:
         Globals.loading = True
 
     def game_session_init(self):
+        Globals.given_rewards = 0
+        Globals.reward = 0
+        Globals.blocks = 0
+        Globals.results_list = []
         Globals.steps = LearningThread.iteration
         self.timer = game_time
         self._learning_thread = LearningThread()
