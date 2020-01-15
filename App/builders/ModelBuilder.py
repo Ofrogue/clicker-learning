@@ -1,4 +1,4 @@
-import pickle, Globals
+import pickle, Globals, os
 import numpy as np
 
 from stable_baselines.deepq.policies import CnnPolicy
@@ -6,6 +6,7 @@ from stable_baselines import DQN
 
 from custom.MyDQN import MyDQN
 from custom.MyCnnPolicy import MyCnnPolicy
+from trackers import GameTracker
 
 double_q = False
 prioritized_replay = True
@@ -15,8 +16,8 @@ verbose = 2
 exploration_fraction = 0.0002
 exploration_final_eps = 0.00002
 
-magnitude = 0.1
-learning_rate = 0.000001
+magnitude = 0.15
+learning_rate = 0.000005
 
 
 def init():

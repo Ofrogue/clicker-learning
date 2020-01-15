@@ -106,6 +106,7 @@ class App:
         self._learning_thread = LearningThread()
         self._learning_thread.init_model()
         self._learning_thread.start()
+        self._game_tracker.save_model('init_model.h5')
 
     def on_loop(self):
         if Globals.steps <= 0:

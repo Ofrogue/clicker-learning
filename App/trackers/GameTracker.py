@@ -25,7 +25,6 @@ class GameTracker:
     def __init__(self):
         if not os.path.exists(self.results_dir):
             self.files_n = 1
-            os.makedirs(self.results_dir)
         else:
             self.files_n = len(os.listdir(self.results_dir)) + 1
 
@@ -33,5 +32,9 @@ class GameTracker:
         dir_name = self.results_session_dir.format(self.files_n)
         results = pd.DataFrame(Globals.results_list).drop_duplicates()
         results.to_csv(dir_name + '/results.csv', index=False)
-        Globals.model.save(dir_name + '/model.h5')
+        self.save_model('final_model.h5')
         self.files_n += 1
+
+    def save_model(self, name):
+        dir_name = self.results_session_dir.format(self.files_n)
+        Globals.model.save(dir_name + '/' + name)

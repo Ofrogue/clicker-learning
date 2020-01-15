@@ -5,7 +5,7 @@ from builders import ModelBuilder, EnvironmentBuilder
 
 
 class LearningThread(threading.Thread):
-    iteration = 5000
+    iteration = 18000
 
     def __init__(self,  *args, **kwargs):
         super(LearningThread, self).__init__(*args, **kwargs)
