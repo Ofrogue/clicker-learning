@@ -36,7 +36,7 @@ class App:
 
     def set_upper_frame(self):
         self._timer_srf.fill((0, 0, 0))
-        text = self._timer_font.render('Iteraions : {0}    Rewards : {1}'.format(Globals.steps, Globals.given_rewards), True, (255, 255, 255))
+        text = self._timer_font.render('Iterations : {0}    Rewards : {1}'.format(Globals.steps, Globals.given_rewards), True, (255, 255, 255))
         textRect = text.get_rect()
         textRect.center = (self.timer_srf_width // 2, self.timer_srf_height // 2)
         self._timer_srf.blit(text, textRect)
