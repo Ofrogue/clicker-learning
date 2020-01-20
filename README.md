@@ -38,11 +38,13 @@ Navigate to ```App``` folder and run the following command ```python App.py``` a
 After the game is loaded you will be able to interact with it, using the following keys:
 * p - pause/unpause the game
 * space - give reward
-* q - hard reset(load new model and environment)
+* q - hard reset(load the new model and environment)
 * Esc - quit game
+
+Your task is to press space each time you see the model does something good for your opinion. For examlpe, when it bounces the ball or destroys a brick.
 
 At the top of the screen you will see 2 indicators: the number of iteraions left and 
 the number of rewards that were given throughout the session.
 
-After a session has ended(quit game, hard reset or the game has ended) you will see a new directory in ```App/tensor``` where bouth the model and 
+After a session has ended(quit game, hard reset or the game has ended) you will see a new directory in ```App/tensor``` where both the model and 
 some other meta data will appear.
