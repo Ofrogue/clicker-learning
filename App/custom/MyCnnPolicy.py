@@ -4,7 +4,6 @@ import numpy as np
 from gym.spaces import Discrete
 
 from stable_baselines.common.policies import BasePolicy, nature_cnn, register_policy
-######
 from stable_baselines.deepq.policies import DQNPolicy 
 
 

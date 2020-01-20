@@ -25,9 +25,9 @@ class App:
         self.timer = game_time
         self.fps = 30
         self.current_frame = 0
-        self.timer_srf_size = self.timer_srf_width, self.timer_srf_height = 350, 50
-        self.game_srf_size = self.game_srf_width, self.game_srf_height = 350, 420
-        self.display_size = self.display_width, self.display_height = 350, 470
+        self.timer_srf_size = self.timer_srf_width, self.timer_srf_height = 450, 50
+        self.game_srf_size = self.game_srf_width, self.game_srf_height = 450, 520
+        self.display_size = self.display_width, self.display_height = 450, 570
 
     def get_time(self):
         minunts = int(self.timer / 60)

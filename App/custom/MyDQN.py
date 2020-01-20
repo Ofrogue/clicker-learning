@@ -180,7 +180,7 @@ class MyDQN(DQN):
                 can_sample = self.replay_buffer.can_sample(self.batch_size)
 
                 if can_sample:
-                    sleep = 0.025
+                    sleep = 0.035
 
                 time.sleep(sleep)
 
@@ -453,9 +453,3 @@ def my_build_train(q_func, ob_space, ac_space, optimizer, sess, grad_norm_clippi
     update_target = tf_util.function([], [], updates=[update_target_expr])
 
     return act_f, train, update_target, step_model
-
-
-
-
-
-
