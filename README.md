@@ -1,5 +1,7 @@
 # clicker-learning
 Improving an RL agent with a human teacher 
+https://medium.com/@kmedyanovskiy/how-to-train-your-artificial-dragon-or-clicker-learning-778d24c6ead2
+
 # Description
 
 Humans train dogs by delivering rewards to specific actions so that the dog will associate certain actions and situations to either positive (to be repeated again) or negative (to be avoided) values. Similarly, artificial agents are now trained automatically by reinforcement signals delivered after a goal has been achieved by the agent. Unfortunately, this process is very slow and requires many samples to learn. The aim of this project is to test whether it is possible to train a character in a video-game by delivering the reward (mouse click) at any event of teacher's choice (not only at the end of a goal). How does it compare to state-of-the-art reinforcement learning algorithms?
@@ -13,7 +15,7 @@ We are using:
 * gym enviroment https://github.com/openai/gym
 * atari game Breakout
 
-To conduct the experiment we will:
+To conduct the experiment:
 * adopt a state-of-the-art model from the zoo
 * freeze all convolutional layers (or freeze all layers except the last $n$)
 * add noise to the remained layers
