@@ -1,6 +1,6 @@
 python==3.7
 opencv
-tensorflow==1.15.2
+tensorflow==2.6.4
 gym==0.11.0
 gym[atari]
 stable-baselines==2.8.0
